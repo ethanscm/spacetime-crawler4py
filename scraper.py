@@ -15,12 +15,37 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
+    
+    # implement:
+    #   BeautifulSoup/lxml to parse
+    #   get all the info needed to answer questions here (save somewhere)
+    #   in this part we just 
+    
 
+    next_links = list()
+
+    # i added this garbage
+    if resp.status == 200:
+        resp.raw_response.content #somehow get hyperlinks as string from this and shove in 
+        
+    else:
+        #epic error moment girl slay boss
+        print(resp.error) #do something
+    # garbage ends here 
+
+    return next_links
+
+
+
+# change this
 def is_valid(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
+
+    # implement:
+    #   look for traps
+    #   
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
