@@ -1,4 +1,5 @@
 import re
+import tokenizer
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
@@ -32,10 +33,13 @@ def extract_next_links(url, resp):
         #   fetching hyperlinks/urls
         #       find_all = returns list with all lines matching parameters
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
-        for link in soup.find_all('a', href=True):
-            next_links.append(link['href'])
+        text = soup.get_text()
+        tokens = tokenizer.computeWordFrequencies(tokenizer.tokenize(text))
+        print(tokens)
 
-        
+        #for link in soup.find_all('a', href=True):
+        #    next_links.append(link['href'])
+        #    print(link['href'])        
     else:
         #
         print(resp.error) #do something
