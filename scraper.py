@@ -1,5 +1,6 @@
 import re
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -18,18 +19,25 @@ def extract_next_links(url, resp):
     
     # implement:
     #   BeautifulSoup/lxml to parse
-    #   get all the info needed to answer questions here (save somewhere)
-    #   in this part we just 
-    
+    #   Get all the Question info here maybe?
+    #       insert website similarity hashing here (so comparision is possible)
+    #       page length + common words recorded here
+    #       
+    #   relative -> absolute URLs
 
     next_links = list()
 
     # i added this garbage
     if resp.status == 200:
-        resp.raw_response.content #somehow get hyperlinks as string from this and shove in 
+        #   fetching hyperlinks/urls
+        #       find_all = returns list with all lines matching parameters
+        soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
+        for link in soup.find_all('a', href=True):
+            next_links.append(link['href'])
+
         
     else:
-        #epic error moment girl slay boss
+        #
         print(resp.error) #do something
     # garbage ends here 
 
@@ -45,9 +53,18 @@ def is_valid(url):
 
     # implement:
     #   look for traps
-    #   
+    #   look for similar pages
+    #       write something to detect similar URLs and/or similar webpage contents??
+    #           ex: webpages sharing url (disregard fragment part)
+    #   look for empty pages
+    #   look for big files that do nothing
+
+    
+
     try:
         parsed = urlparse(url)
+        defrag_url = urlparse.urldefrag(url)[0] #added
+
         if parsed.scheme not in set(["http", "https"]):
             return False
         return not re.match(
