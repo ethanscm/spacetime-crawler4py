@@ -31,7 +31,9 @@ def extract_next_links(url, resp):
     if resp.status == 200:
         #   fetching hyperlinks/urls
         #       find_all = returns list with all lines matching parameters
-        soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
+        with open(url) as file:
+            #resp.raw_response.content
+            soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
         for link in soup.find_all('a', href=True):
             next_links.append(link['href'])
 
