@@ -1,6 +1,12 @@
 import sys
 import re
 
+import nltk
+nltk.download('stopwords')
+
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words("english"))
+
 # Time Complexity: linear time
     # The function will iterate through each character: O(n)
         # Building the token character by character will take O(1)
@@ -11,11 +17,6 @@ def tokenize(text):
     tokens = []
 
     alphanum = re.compile("^[a-z]|[0-9]&")
-
-    stop_words = []
-
-    #reads character by character to minimize ram usage
-    #reads in byte mode so that the file pointer is moved on read
 
     word = ""
     for char in text:    
@@ -33,6 +34,16 @@ def tokenize(text):
                 break
 
     return tokens
+
+def remove_stopwords(tokens):
+    filtered_list = []
+
+    for t in tokens:
+        if t in stop_words:
+            continue
+        filtered_list.append(t)
+
+    return filtered_list
 
 # Time Complexity: linear time
     # The function will iterate through each token: O(n)

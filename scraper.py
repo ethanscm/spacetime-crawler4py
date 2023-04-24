@@ -3,6 +3,8 @@ import tokenizer
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
+all_words = {}
+
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
@@ -30,12 +32,19 @@ def extract_next_links(url, resp):
 
     # i added this garbage
     if resp.status == 200:
+        # also must check if there is any data at all
+
         #   fetching hyperlinks/urls
         #       find_all = returns list with all lines matching parameters
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
         text = soup.get_text()
-        tokens = tokenizer.computeWordFrequencies(tokenizer.tokenize(text))
-        print(tokens)
+        tokens = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokenizer.tokenize(text)))
+
+        for t in tokens:
+            if t not in all_words:
+                all_words[t] = tokens[t]
+            else:
+                all_words[t] += tokens[t]
 
         #for link in soup.find_all('a', href=True):
         #    next_links.append(link['href'])
