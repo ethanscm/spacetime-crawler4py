@@ -1,6 +1,11 @@
 import re
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
+import tokenizer
+
+class text_tracker:
+    all_words = {}
+    longest_page = ("", 0)
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -34,8 +39,25 @@ def extract_next_links(url, resp):
         with open(url) as file:
             #resp.raw_response.content
             soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
+
+            #create a word frequency list of all words in the current page
+            text = soup.get_text()
+            tokens = tokenizer.tokenize(text)
+            frequencies = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokens))
+
+            #update the current frequency totals amongst all pages. Track the longest page.
+            if(len(tokens) > text_tracker.longest_page[1]):
+                text_tracker.longest_page = (url, len(tokens))
+            for t in frequencies:
+                if t not in text_tracker.all_words:
+                    text_tracker.all_words[t] = frequencies[t]
+                else:
+                    text_tracker.all_words[t] += frequencies[t]
+                    
         for link in soup.find_all('a', href=True):
             next_links.append(link['href'])
+
+        #tokenize
 
         
     else:
