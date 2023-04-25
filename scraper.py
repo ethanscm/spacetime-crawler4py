@@ -3,7 +3,9 @@ import tokenizer
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
-all_words = {}
+class text_tracker:
+    all_words = {}
+    longest_page = ("", 0)
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -32,19 +34,20 @@ def extract_next_links(url, resp):
 
     # i added this garbage
     if resp.status == 200:
-        # also must check if there is any data at all
-
         #   fetching hyperlinks/urls
         #       find_all = returns list with all lines matching parameters
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
         text = soup.get_text()
-        tokens = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokenizer.tokenize(text)))
+        tokens = tokenizer.tokenize(text)
+        if(len(tokens) > text_tracker.longest_page[1]):
+            text_tracker.longest_page = (url, len(tokens))
+        tokens = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokens))
 
         for t in tokens:
-            if t not in all_words:
-                all_words[t] = tokens[t]
+            if t not in text_tracker.all_words:
+                text_tracker.all_words[t] = tokens[t]
             else:
-                all_words[t] += tokens[t]
+                text_tracker.all_words[t] += tokens[t]
 
         #for link in soup.find_all('a', href=True):
         #    next_links.append(link['href'])
