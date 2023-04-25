@@ -36,28 +36,25 @@ def extract_next_links(url, resp):
     if resp.status == 200:
         #   fetching hyperlinks/urls
         #       find_all = returns list with all lines matching parameters
-        with open(url) as file:
-            #resp.raw_response.content
-            soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
+        #resp.raw_response.content
+        soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
 
-            #create a word frequency list of all words in the current page
-            text = soup.get_text()
-            tokens = tokenizer.tokenize(text)
-            frequencies = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokens))
+        #create a word frequency list of all words in the current page
+        text = soup.get_text()
+        tokens = tokenizer.tokenize(text)
+        frequencies = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokens))
 
-            #update the current frequency totals amongst all pages. Track the longest page.
-            if(len(tokens) > text_tracker.longest_page[1]):
-                text_tracker.longest_page = (url, len(tokens))
-            for t in frequencies:
-                if t not in text_tracker.all_words:
-                    text_tracker.all_words[t] = frequencies[t]
-                else:
-                    text_tracker.all_words[t] += frequencies[t]
+        #update the current frequency totals amongst all pages. Track the longest page.
+        if(len(tokens) > text_tracker.longest_page[1]):
+            text_tracker.longest_page = (url, len(tokens))
+        for t in frequencies:
+            if t not in text_tracker.all_words:
+                text_tracker.all_words[t] = frequencies[t]
+            else:
+                text_tracker.all_words[t] += frequencies[t]
                     
         for link in soup.find_all('a', href=True):
             next_links.append(link['href'])
-
-        #tokenize
 
         
     else:
