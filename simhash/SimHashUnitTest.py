@@ -24,6 +24,14 @@ class SimHashTests(unittest.TestCase):
         similarRes = simHash.similar(test_dict2)
         
         self.assertFalse(similarRes)
+    
+    def test_addTwoSame(self):
+        test_dict1 = {'a':1 , 'b': 2}
+        simHash = sh.SimHash(1)
+        similarRes = simHash.similar(test_dict1)
+        similarRes = simHash.similar(test_dict1)
+        
+        self.assertTrue(similarRes)
         
 
 

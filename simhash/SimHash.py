@@ -15,8 +15,8 @@ class SimHash:
     
     #   generic hash function that gets hash based off a string from concatinated tuple (8 bits here)
     def __hash(self,word:str)->int:
-        hash_val = sum(ord(c) for c in word)%256
-        print(hash_val)
+        num = sum(ord(c) for c in word)
+        hash_val = (num*(num+3))%256
         return hash_val
 
 # public methods
@@ -35,14 +35,14 @@ class SimHash:
                         token_Vector[j] += weight
                     else:
                         token_Vector[j] -= weight
-        
+                
         #   STEP 3: TURN THE VECTOR INTO 0s and 1s  (0s just stay the same ig)
         for d in range(0,len(token_Vector)):
-            if d > 0:
+            if token_Vector[d] > 0:
                 token_Vector[d] = 1
             else:
                 token_Vector[d] = 0
-        
+
         #   STEP 4: TURNS IT INTO AN INT
         token = self.__binVector_to_int(token_Vector)
         return token
