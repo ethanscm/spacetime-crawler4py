@@ -1,5 +1,5 @@
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urldefrag
 from bs4 import BeautifulSoup
 import tokenizer
 
@@ -9,6 +9,7 @@ class text_tracker:
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
+    addToUniquePages(url)       # added
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -83,11 +84,17 @@ def is_valid(url):
     
 
     try:
-        parsed = urlparse(url)
-        defrag_url = urlparse.urldefrag(url)[0] #added
+        url = urldefrag(url)        # edited - takes url parameter and removes the fragment (#aaa, #bbb part)
+        parsed = urlparse(url[0])   # edited - url[0] is new url without fragment (so it's counted as one website)
 
         if parsed.scheme not in set(["http", "https"]):
             return False
+
+        # NEW
+        if not re.search('\.ics.uci.edu|\.cs.uci.edu|\.informatics.uci.edu|\.stat.uci.edu', parsed.netloc):
+            return False
+        # ===
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -101,3 +108,12 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
+
+
+# Added helper function
+def addToUniquePages(url):
+    # Adds new URL to the uniquePages.txt document if it is valid
+    if is_valid(url):
+        uniquePage = open('uniquePages.txt', 'a')
+        uniquePage.write(f"{url}\n")
+        uniquePage.close()
