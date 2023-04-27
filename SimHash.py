@@ -1,36 +1,37 @@
 from collections import defaultdict
 
-
+#   creates SimHash object with a threshold (similarity %) and hashes set
+#       self._threshold =   long between 0 through 1
+#       self._hashes =      set of integer hashes representing already crawled webpages
 class SimHash:
-    def __init__(self, threshold: int):
+    def __init__(self, threshold):
         self._threshold = threshold
         self._hashes = set()
 
-# private methods
+    # private methods
     #   turns binary vector into an int
     #       ex: [1,0,1] = 5
     def __binVector_to_int(self, binVector:list)->int:
         binString = ''.join(map(str,binVector))
         return int(binString,2)
     
-    #   generic hash function that gets hash based off a string from concatinated tuple (8 bits here)
+    #   simple hash method that converts word into an 16-bit hash number
     def __hash(self,word:str)->int:
         num = sum(ord(c) for c in word)
-        hash_val = (num*(num+3))%256
+        hash_val = (num*(num+3))%65535
         return hash_val
 
-# public methods
-    #   turns text file into a hash (int)
-    #       selects hash values using mod 4 to be fingerprint
+    # public methods
+    #   given a token_dict (obtained in scraper.py), will return an assigned tokenHash
     def tokenHash(self, token_dict:dict)->int:         
         #   STEP 2: TOKEN to HASH (int) to BIN_NUM (binary_num) then add appropriate weight
-        token_Vector = [0]*8
+        token_Vector = [0]*16
         for word,weight in token_dict.items():
                 #idk if it work like that but
                 hash_val= self.__hash(word)
-                bin_vect = [int(i) for i in format(hash_val, f'08b')]
+                bin_vect = [int(i) for i in format(hash_val, f'016b')]
                 
-                for j in range(0, 8):
+                for j in range(0, 16):
                     if bin_vect[j] == 1:
                         token_Vector[j] += weight
                     else:
@@ -54,15 +55,15 @@ class SimHash:
         token  = self.tokenHash(token_dict)        
 
         for i in self._hashes:
-            xor_comp = format(token^i, f'08b')
+            xor_comp = format(token^i, f'016b')
             similarity = xor_comp.count('0')
-            if similarity/8.0 >= self._threshold:
+            if similarity/16.0 >= self._threshold:
                 return True
 
         self._hashes.add(token)
         return False
     
-    #   methods that exist to check class variable values
+    #   testing methods, returns threshold and hashes set respectively
     def threshold(self)->int:
         return self._threshold
     
