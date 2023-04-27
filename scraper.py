@@ -7,6 +7,9 @@ class text_tracker:
     all_words = {}
     longest_page = ("", 0)
 
+class dup_url:
+    setOfURLs = set()
+
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     addToUniquePages(url)       # added
@@ -91,7 +94,14 @@ def is_valid(url):
             return False
 
         # NEW
+        # Checks if URL is in valid domain (one of the four domains - ics, cs, informatics, stat)
         if not re.search('\.ics.uci.edu|\.cs.uci.edu|\.informatics.uci.edu|\.stat.uci.edu', parsed.netloc):
+            return False
+
+        # Checks for duplicate URLs
+        if url not in dup_url.setOfURLs:
+            dup_url.setOfURLs.add(url)
+        else:
             return False
         # ===
 
