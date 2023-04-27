@@ -2,6 +2,7 @@ import re
 from urllib.parse import urlparse, urldefrag
 from bs4 import BeautifulSoup
 import tokenizer
+from SimHash import SimHash
 
 class text_tracker:
     all_words = {}
@@ -14,6 +15,9 @@ def scraper(url, resp):
     links = extract_next_links(url, resp)
     addToUniquePages(url)       # added
     return [link for link in links if is_valid(link)]
+
+class SimHashObj:
+    simHash = SimHash(0.9)
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -47,6 +51,11 @@ def extract_next_links(url, resp):
         text = soup.get_text()
         tokens = tokenizer.tokenize(text)
         frequencies = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokens))
+
+        #   checks if webpage being scraped is within 90% similarity of existing pages
+        #       If true, we just dont analyze it
+        if SimHashObj.simHash.similar(tokens) == True:
+            return next_links
 
         #update the current frequency totals amongst all pages. Track the longest page.
         if(len(tokens) > text_tracker.longest_page[1]):
