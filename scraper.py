@@ -122,11 +122,13 @@ def extract_next_links(url, resp):
                     
         for link in soup.find_all('a', href=True):
             next_links.append(link['href'])
-
-        
     else:
-        #
-        print(resp.error) #do something
+        if resp.status/100 == 3:
+            soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+            for link in soup.find_all('a', href=True):
+                next_links.append(link['href'])
+        else:
+            print(resp.error) #do something
     # garbage ends here 
 
     return next_links
