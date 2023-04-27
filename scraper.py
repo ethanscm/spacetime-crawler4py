@@ -3,61 +3,7 @@ from urllib.parse import urlparse, urldefrag, urljoin
 from bs4 import BeautifulSoup
 import tokenizer
 from SimHash import SimHash
-
-class text_tracker:
-    all_words = {}
-    tokens = []
-    longest_page = ("", 0)
-
-    def SortFrequencies(array):
-        if(len(array) == 1):
-            return array
-        elif (len(array) == 0):
-            return array
-        
-        mid = len(array) // 2
-        left = text_tracker.SortFrequencies(array[:mid])
-        right = text_tracker.SortFrequencies(array[mid:])
-
-        l = 0
-        r = 0
-        t = []
-
-        while l < len(left) and r < len(right):
-            if text_tracker.all_words[left[l]] > text_tracker.all_words[right[r]]:
-                t.append(left[l])
-                l += 1
-            elif text_tracker.all_words[left[l]] < text_tracker.all_words[right[r]]:
-                t.append(right[r])
-                r += 1
-            else:
-                if(left[l] <= right[r]):
-                    t.append(left[l])
-                    l += 1
-                else:
-                    t.append(right[r])
-                    r += 1
-
-        while l < len(left):
-            t.append(left[l])
-            l += 1
-
-        while r < len(right):
-            t.append(right[r])
-            r += 1
-        
-        return t
-
-    def printtopfifty(array):
-        print("---Top 50---")
-
-        arr = text_tracker.SortFrequencies(array)
-        print(f"after sorted. ", arr)
-
-        for t in range(50):
-            if t >= len(arr):
-                break
-            print(f'{t}) {arr[t]}: {text_tracker.all_words[arr[t]]}')
+from text_tracker import *
 
 
 class dup_url:
@@ -112,6 +58,9 @@ def extract_next_links(url, resp):
         #update the current frequency totals amongst all pages. Track the longest page.
         if(len(tokens) > text_tracker.longest_page[1]):
             text_tracker.longest_page = (url, len(tokens))
+            lp_file = open("longest_page.txt", "w")
+            lp_file.write(f"({url}, {len(tokens)})")
+            lp_file.close()
             
         for t in frequencies:
             if t not in text_tracker.all_words:
@@ -119,6 +68,11 @@ def extract_next_links(url, resp):
                 text_tracker.tokens.append(t)
             else:
                 text_tracker.all_words[t] += frequencies[t]
+
+        #save current frequencies
+        freq_text = open('frequency.txt', 'w')
+        freq_text.write(f"{text_tracker.all_words}\n")
+        freq_text.close()
                     
         for link in soup.find_all('a', href=True):
             next_links.append(link['href'])
@@ -196,3 +150,9 @@ def addToUniquePages(url):
         uniquePage = open('uniquePages.txt', 'a')
         uniquePage.write(f"{url}\n")
         uniquePage.close()
+
+def restoreDupURLs():
+    pageFile = open("uniquePages.txt", "r")
+    for line in pageFile:
+        dup_url.setOfURLs.add(line)
+    pageFile.close()
