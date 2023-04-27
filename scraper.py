@@ -1,5 +1,5 @@
 import re
-from urllib.parse import urlparse, urldefrag
+from urllib.parse import urlparse, urldefrag, urljoin
 from bs4 import BeautifulSoup
 import tokenizer
 from SimHash import SimHash
@@ -106,7 +106,7 @@ def extract_next_links(url, resp):
 
         #   checks if webpage being scraped is within 90% similarity of existing pages
         #       If true, we just dont analyze it
-        if SimHashObj.simHash.similar(tokens) == True:
+        if SimHashObj.simHash.similar(frequencies) == True:
             return next_links
 
         #update the current frequency totals amongst all pages. Track the longest page.
@@ -128,8 +128,12 @@ def extract_next_links(url, resp):
             for link in soup.find_all('a', href=True):
                 next_links.append(link['href'])
         else:
-            print(resp.error) #do something
-    # garbage ends here 
+            print(resp.error)
+
+    #turn relative urls into absolute
+    for i in range(len(next_links)):
+        next_links[i] = urljoin(url, next_links[i])
+        print(next_links[i])
 
     return next_links
 
@@ -160,7 +164,7 @@ def is_valid(url):
 
         # NEW
         # Checks if URL is in valid domain (one of the four domains - ics, cs, informatics, stat)
-        if not re.search('\.ics.uci.edu|\.cs.uci.edu|\.informatics.uci.edu|\.stat.uci.edu', parsed.netloc):
+        if not re.search('\.ics\.uci\.edu|\.cs\.uci\.edu|\.informatics\.uci\.edu|\.stat\.uci\.edu', parsed.netloc):
             return False
 
         # Checks for duplicate URLs

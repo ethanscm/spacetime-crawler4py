@@ -32,7 +32,7 @@ subdomainsDict = defaultdict(int)
 # (or adds one for unique page to existing key)
 for url in setOfPages:
     parsed = urlparse(url)
-    if re.search('\.ics.uci.edu', parsed.netloc):
+    if re.search('\.ics\.uci\.edu', parsed.netloc):
         subdomain = parsed.netloc.split('.')[0]
         subdomainsDict[subdomain] += 1
 
