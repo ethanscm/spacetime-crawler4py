@@ -12,7 +12,11 @@ class dup_url:
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     addToUniquePages(url)       # added
-    return [link for link in links if is_valid(link)]
+    #print(f"crawled {url}")
+    valid_urls = [link for link in links if is_valid(link)]
+    #for v in valid_urls:
+        #print(f"\t {v}")
+    return valid_urls
 
 class SimHashObj:
     simHash = SimHash(0.9)
@@ -138,7 +142,8 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
+            + r"|pdf|png|ppsx)$", parsed.path.lower()) #more file formats to avoid crawling
 
     except TypeError:
         print ("TypeError for ", parsed)
@@ -148,10 +153,10 @@ def is_valid(url):
 # Added helper function
 def addToUniquePages(url):
     # Adds new URL to the uniquePages.txt document if it is valid
-    if is_valid(url):
-        uniquePage = open('uniquePages.txt', 'a')
-        uniquePage.write(f"{url}\n")
-        uniquePage.close()
+    #if is_valid(url):
+    uniquePage = open('uniquePages.txt', 'a')
+    uniquePage.write(f"{url}\n")
+    uniquePage.close()
 
 def restoreDupURLs():
     pageFile = open("uniquePages.txt", "r")
