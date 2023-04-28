@@ -64,7 +64,7 @@ class text_tracker:
         for item in all_pairs:
             kv = item.split(": ")
             print(kv)
-            k = kv[0][1:-2]
+            k = kv[0][1:-1]
             v = int(kv[1])
             text_tracker.tokens.append(k)
             text_tracker.all_words[k] = v
