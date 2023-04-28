@@ -58,18 +58,15 @@ class text_tracker:
         freq_file = open("frequency.txt", 'r')
         freq_text= freq_file.read()
         raw_text = freq_text[1:-2]
-        print(raw_text)
         all_pairs = raw_text.split(", ")
 
         for item in all_pairs:
             kv = item.split(": ")
-            print(kv)
             k = kv[0][1:-1]
             v = int(kv[1])
             text_tracker.tokens.append(k)
             text_tracker.all_words[k] = v
 
-        print(type(text_tracker.all_words), text_tracker.all_words)
         freq_file.close()
 
         #restore the longest page variable
@@ -80,4 +77,3 @@ class text_tracker:
         lp = lp[1:-1]
         lp = lp.split(", ")
         text_tracker.longest_page = (lp[0], int(lp[1]))
-        print(type(text_tracker.longest_page[0]), type(text_tracker.longest_page[1]), text_tracker.longest_page)
