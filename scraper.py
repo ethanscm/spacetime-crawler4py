@@ -85,9 +85,11 @@ def extract_next_links(url, resp):
             print(resp.error)
 
     #turn relative urls into absolute
+    # [Ethan] defragment the urls here instead of in is_valid
     for i in range(len(next_links)):
-        next_links[i] = urljoin(url, next_links[i])
-        print(next_links[i])
+        potential_url = urljoin(url, next_links[i])
+        potential_url = urldefrag(potential_url)
+        next_links[i] = potential_url[0]
 
     return next_links
 
