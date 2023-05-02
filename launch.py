@@ -21,6 +21,10 @@ def main(config_file, restart):
     #load_old_data()
 
     crawler.start()
+    t50 = text_tracker.get_top_fifty(text_tracker.tokens)
+    print("Top 50 Words")
+    for t in range(50):
+        print(f'{t}) {t50[t]} -> {text_tracker.all_words[t50[t]]}')
 
 def load_old_data():
     text_tracker.restore_data()

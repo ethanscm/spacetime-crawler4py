@@ -143,7 +143,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
-            + r"|pdf|png|ppsx)$", parsed.path.lower()) #more file formats to avoid crawling
+            + r"|pdf|png|ppsx|json)$", parsed.path.lower()) #more file formats to avoid crawling
 
     except TypeError:
         print ("TypeError for ", parsed)

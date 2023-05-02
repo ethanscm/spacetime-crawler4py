@@ -42,16 +42,18 @@ class text_tracker:
         
         return t
 
-    def printtopfifty(array):
-        print("---Top 50---")
+    def get_top_fifty(array):
 
         arr = text_tracker.SortFrequencies(array)
-        print(f"after sorted. ", arr)
+
+        top = []
 
         for t in range(50):
             if t >= len(arr):
                 break
-            print(f'{t}) {arr[t]}: {text_tracker.all_words[arr[t]]}')
+            top.append(arr[t])
+        
+        return top
 
     def restore_data():
         #restore the frequency variable
