@@ -12,10 +12,7 @@ class dup_url:
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     addToUniquePages(url)       # added
-    #print(f"crawled {url}")
     valid_urls = [link for link in links if is_valid(link)]
-    #for v in valid_urls:
-        #print(f"\t {v}")
     return valid_urls
 
 class SimHashObj:

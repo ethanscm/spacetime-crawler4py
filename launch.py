@@ -22,9 +22,12 @@ def main(config_file, restart):
 
     crawler.start()
     t50 = text_tracker.get_top_fifty(text_tracker.tokens)
+    t50_txt = open("top50.txt", 'a')
     print("Top 50 Words")
     for t in range(50):
         print(f'{t}) {t50[t]} -> {text_tracker.all_words[t50[t]]}')
+        t50_txt.write(f'{t}) {t50[t]} -> {text_tracker.all_words[t50[t]]}\n')
+    t50_txt.close()
 
 def load_old_data():
     text_tracker.restore_data()
