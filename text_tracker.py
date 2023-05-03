@@ -42,13 +42,13 @@ class text_tracker:
         
         return t
 
-    def get_top_fifty(array):
+    def get_top_tokens(array, topnum):
 
         arr = text_tracker.SortFrequencies(array)
 
         top = []
 
-        for t in range(50):
+        for t in range(topnum):
             if t >= len(arr):
                 break
             top.append(arr[t])

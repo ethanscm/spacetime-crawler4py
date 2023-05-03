@@ -27,7 +27,7 @@ def tokenize(text):
             word += char
         else:
             # add fully built token to list
-            if(word != ""):
+            if(word != "" or len(word) > 1):
                 tokens.append(word)
                 word = ""
             if(char == ""):
@@ -62,30 +62,3 @@ def computeWordFrequencies(tokens):
             freq[t] += 1
 
     return freq
-
-# Time Complexity: quadratic time
-    # The function first converts the dictionary into a list: O(n)
-    # Then it sorts the list via selection sort: O(n^2)
-    # Lastly it prints each token and their frequency: O(n)
-    # O(n + n^2 + n) = O(n^2)
-def printFreq(freq):
-    # convert into list to make sorting work
-    tokens = [f for f in freq]
-
-    #insertion sort
-    for i in range(1, len(tokens)):
-        j = i
-        #compares frequency first then alphabetical order
-        while(j > 0 and freq[tokens[j]] >= freq[tokens[j-1]]):
-            if(freq[tokens[j]] == freq[tokens[j-1]] and tokens[j] > tokens[j-1]):
-                j -= 1
-                continue
-
-            temp = tokens[j-1]
-            tokens[j-1] = tokens[j]
-            tokens[j] = temp
-            j -= 1
-    
-    #print sorted tokens
-    for t in tokens:
-        print(f'{t} {freq[t]}')

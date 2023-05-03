@@ -16,7 +16,7 @@ def scraper(url, resp):
     return valid_urls
 
 class SimHashObj:
-    simHash = SimHash(0.9)
+    simHash = SimHash(0.95)
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -59,8 +59,8 @@ def extract_next_links(url, resp):
         #update the current frequency totals amongst all pages. Track the longest page.
         if(len(tokens) > text_tracker.longest_page[1]):
             text_tracker.longest_page = (url, len(tokens))
-            lp_file = open("longest_page.txt", "w")
-            lp_file.write(f"({url}, {len(tokens)})")
+            lp_file = open("longest_page.txt", "a")
+            lp_file.write(f"({url}, {len(tokens)})\n")
             lp_file.close()
             
         for t in frequencies:
@@ -140,7 +140,7 @@ def is_valid(url):
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz"
-            + r"|pdf|png|ppsx|json)$", parsed.path.lower()) #more file formats to avoid crawling
+            + r"|pdf|png|ppsx|json|ma)$", parsed.path.lower()) #more file formats to avoid crawling
 
     except TypeError:
         print ("TypeError for ", parsed)

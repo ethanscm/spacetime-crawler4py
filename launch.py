@@ -21,13 +21,14 @@ def main(config_file, restart):
     #load_old_data()
 
     crawler.start()
-    t50 = text_tracker.get_top_fifty(text_tracker.tokens)
-    t50_txt = open("top50.txt", 'a')
-    print("Top 50 Words")
-    for t in range(50):
-        print(f'{t+1}) {t50[t]} -> {text_tracker.all_words[t50[t]]}')
-        t50_txt.write(f'{t+1}) {t50[t]} -> {text_tracker.all_words[t50[t]]}\n')
-    t50_txt.close()
+    
+    top_tokens = text_tracker.get_top(text_tracker.tokens, 200)
+    top_txt = open("top.txt", 'a')
+    print("Top Tokens")
+    for t in range(200):
+        print(f'{t+1}) {top_tokens[t]} -> {text_tracker.all_words[top_tokens[t]]}')
+        top_txt.write(f'{t+1}) {top_tokens[t]} -> {text_tracker.all_words[top_tokens[t]]}\n')
+    top_txt.close()
 
 def load_old_data():
     text_tracker.restore_data()
