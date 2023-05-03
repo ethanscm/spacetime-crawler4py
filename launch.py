@@ -25,21 +25,17 @@ def main(config_file, restart):
     t50_txt = open("top50.txt", 'a')
     print("Top 50 Words")
     for t in range(50):
-        print(f'{t}) {t50[t]} -> {text_tracker.all_words[t50[t]]}')
-        t50_txt.write(f'{t}) {t50[t]} -> {text_tracker.all_words[t50[t]]}\n')
+        print(f'{t+1}) {t50[t]} -> {text_tracker.all_words[t50[t]]}')
+        t50_txt.write(f'{t+1}) {t50[t]} -> {text_tracker.all_words[t50[t]]}\n')
     t50_txt.close()
 
 def load_old_data():
     text_tracker.restore_data()
     restoreDupURLs()
     text_tracker.restore_longest_page()
-    SimHashObj.restore_simhashes()
+    SimHashObj.simHash.restore_simhashes()
 
 if __name__ == "__main__":
-    load_old_data()
-
-    exit() 
-
     parser = ArgumentParser()
     parser.add_argument("--restart", action="store_true", default=True)
     parser.add_argument("--config_file", type=str, default="config.ini")
