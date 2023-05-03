@@ -5,7 +5,7 @@ from utils.server_registration import get_cache_server
 from utils.config import Config
 from crawler import Crawler
 
-from scraper import restoreDupURLs
+from scraper import restoreDupURLs, SimHashObj
 from text_tracker import *
 
 
@@ -33,8 +33,13 @@ def load_old_data():
     text_tracker.restore_data()
     restoreDupURLs()
     text_tracker.restore_longest_page()
+    SimHashObj.restore_simhashes()
 
 if __name__ == "__main__":
+    load_old_data()
+
+    exit() 
+
     parser = ArgumentParser()
     parser.add_argument("--restart", action="store_true", default=True)
     parser.add_argument("--config_file", type=str, default="config.ini")

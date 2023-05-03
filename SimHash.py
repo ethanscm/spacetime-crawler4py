@@ -61,7 +61,16 @@ class SimHash:
                 return True
 
         self._hashes.add(token)
+        hash_file = open("hashes.txt", 'a')
+        hash_file.write(f'{token}\n')
+        hash_file.close()
         return False
+    
+    def restore_simhashes(self):
+        hash_file = open("hashes.txt", 'r')
+        for line in hash_file:
+            h = int(line)
+            self._hashes.add(h)
     
     #   testing methods, returns threshold and hashes set respectively
     def threshold(self)->int:
