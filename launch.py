@@ -18,11 +18,11 @@ def main(config_file, restart):
 
     #restore data back to the classes
     #comment it out if you are restarting
-    #load_old_data()
+    load_old_data()
 
     crawler.start()
     
-    top_tokens = text_tracker.get_top(text_tracker.tokens, 200)
+    top_tokens = text_tracker.get_top_tokens(text_tracker.tokens, 200)
     top_txt = open("top.txt", 'a')
     print("Top Tokens")
     for t in range(200):
@@ -38,7 +38,7 @@ def load_old_data():
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--restart", action="store_true", default=True)
+    parser.add_argument("--restart", action="store_true", default=False)
     parser.add_argument("--config_file", type=str, default="config.ini")
     args = parser.parse_args()
     main(args.config_file, args.restart)

@@ -57,7 +57,7 @@ def extract_next_links(url, resp):
             return next_links
 
         #update the current frequency totals amongst all pages. Track the longest page.
-        if(len(tokens) > text_tracker.longest_page[1]):
+        if(len(tokens) > 10000 or len(tokens) > text_tracker.longest_page[1]):
             text_tracker.longest_page = (url, len(tokens))
             lp_file = open("longest_page.txt", "a")
             lp_file.write(f"({url}, {len(tokens)})\n")
