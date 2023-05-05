@@ -16,7 +16,7 @@ def scraper(url, resp):
     valid_urls = [link for link in links if is_valid(link)]
     return valid_urls
 
-
+# creates SimHash object with specified threshold of 95% similarity
 class SimHashObj:
     simHash = SimHash(0.95)
 
@@ -32,8 +32,8 @@ def extract_next_links(url, resp):
         tokens = tokenizer.tokenize(text)
         frequencies = tokenizer.computeWordFrequencies(tokenizer.remove_stopwords(tokens))
 
-        #   checks if webpage being scraped is within 90% similarity of existing pages
-        #       If true, we just dont analyze it
+        #   checks if webpage being scraped is within 95% similarity of existing pages
+        #       if its is, it is ignored
         if SimHashObj.simHash.similar(frequencies) == True:
             return next_links
 
@@ -59,6 +59,8 @@ def extract_next_links(url, resp):
         for link in soup.find_all('a', href=True):
             next_links.append(link['href'])
     else:
+        #   handles webpages with statuses in the 300s
+        #       will essentially save and redirection pages for future iterations
         if resp.status/100 == 3:
             soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
             for link in soup.find_all('a', href=True):

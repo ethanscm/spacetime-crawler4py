@@ -1,8 +1,8 @@
 from collections import defaultdict
 
-#   creates SimHash object with a threshold (similarity %) and hashes set
+#   SimHash Object: initialized threshold (similarity % in decimals) and empty hashes set
 #       self._threshold =   long between 0 through 1
-#       self._hashes =      set of integer hashes representing already crawled webpages
+#       self._hashes =      set of integer hashes representing crawled webpages
 class SimHash:
     def __init__(self, threshold):
         self._threshold = threshold
@@ -16,6 +16,8 @@ class SimHash:
         return int(binString,2)
     
     #   simple hash method that converts word into an 16-bit hash number
+    #       hashes through taking the integer rep of each unicode char and summing them
+    #       then multiplying by itself + 3 and finding the remainder over 65535
     def __hash(self,word:str)->int:
         num = sum(ord(c) for c in word)
         hash_val = (num*(num+3))%65535
@@ -24,10 +26,9 @@ class SimHash:
     # public methods
     #   given a token_dict (obtained in scraper.py), will return an assigned tokenHash
     def tokenHash(self, token_dict:dict)->int:         
-        #   STEP 2: TOKEN to HASH (int) to BIN_NUM (binary_num) then add appropriate weight
+        #   TOKEN to HASH (str -> int) to 16 bit BIN_NUM (int -> vector) with appropriate weights per word
         token_Vector = [0]*16
         for word,weight in token_dict.items():
-                #idk if it work like that but
                 hash_val= self.__hash(word)
                 bin_vect = [int(i) for i in format(hash_val, f'016b')]
                 
@@ -37,20 +38,22 @@ class SimHash:
                     else:
                         token_Vector[j] -= weight
                 
-        #   STEP 3: TURN THE VECTOR INTO 0s and 1s  (0s just stay the same ig)
+        #   TURNS THE BIN_NUM (vector) INTO 0s and 1s (vector -> int) 
         for d in range(0,len(token_Vector)):
             if token_Vector[d] > 0:
                 token_Vector[d] = 1
             else:
                 token_Vector[d] = 0
 
-        #   STEP 4: TURNS IT INTO AN INT
+        #   TURNS BINARY INT into regular int
         token = self.__binVector_to_int(token_Vector)
         return token
 
-    #   returns if there is too similar site
-    #       true for "yea"
-    #       false for.. "no" will also add the token to the set for future use
+    #   computes token of given token_dict, then checks if similarly webpage already exists
+    #       if all comparisons are under threshold:
+    #           hash is added to the hashes set and returns FALSE
+    #       if it does exceed threshold
+    #           returns TRUE and hash is not added
     def similar(self, token_dict:dict)-> bool:
         token  = self.tokenHash(token_dict)        
 
@@ -66,6 +69,7 @@ class SimHash:
         hash_file.close()
         return False
     
+    #   will add the documented hashes back into the set upon restart
     def restore_simhashes(self):
         hash_file = open("hashes.txt", 'r')
         for line in hash_file:
