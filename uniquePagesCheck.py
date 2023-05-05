@@ -39,9 +39,13 @@ for url in setOfPages:
 # Iterates through each key,val in subdomainsDict and adds it to the subdomainsAndPages list in the form of
 # a tuple - (URL, number of unique pages)
 for key,val in subdomainsDict.items():
-    subdomainsAndPages.append((f"https://{key}.ics.uci.edu",val))
+    subdomainsAndPages.append((f"https://{key.lower()}.ics.uci.edu",val))
 
 subdomainsAndPages.sort(key = lambda x : x[0])      # sorts list alphabetically 
 
 # Counts number of subdomains in ics.uci.edu domain and prints value
 print("Number of subdomains in ics.uci.edu domain:", len(subdomainsAndPages))
+
+# Prints list of subdomains ordered alphabetically and number of unique pages detected in that subdomain
+for sub in subdomainsAndPages:
+    print(f"{sub[0]}, {sub[1]}")

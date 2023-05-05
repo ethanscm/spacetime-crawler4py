@@ -5,9 +5,10 @@ import tokenizer
 from SimHash import SimHash
 from text_tracker import *
 
-
+# Create an empty set to hold all the unique URLs when crawling
 class dup_url:
     setOfURLs = set()
+
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -15,36 +16,16 @@ def scraper(url, resp):
     valid_urls = [link for link in links if is_valid(link)]
     return valid_urls
 
+
 class SimHashObj:
     simHash = SimHash(0.95)
 
-def extract_next_links(url, resp):
-    # Implementation required.
-    # url: the URL that was used to get the page
-    # resp.url: the actual url of the page
-    # resp.status: the status code returned by the server. 200 is OK, you got the page. Other numbers mean that there was some kind of problem.
-    # resp.error: when status is not 200, you can check the error here, if needed.
-    # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
-    #         resp.raw_response.url: the url, again
-    #         resp.raw_response.content: the content of the page!
-    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    
-    # implement:
-    #   BeautifulSoup/lxml to parse
-    #   Get all the Question info here maybe?
-    #       insert website similarity hashing here (so comparision is possible)
-    #       page length + common words recorded here
-    #       
-    #   relative -> absolute URLs
 
+def extract_next_links(url, resp):
     next_links = list()
 
-    # i added this garbage
     if resp.status == 200:
-        #   fetching hyperlinks/urls
-        #       find_all = returns list with all lines matching parameters
-        #resp.raw_response.content
-        soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #resp.url = requests.get(url)
+        soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
 
         #create a word frequency list of all words in the current page
         text = soup.get_text()
@@ -96,30 +77,16 @@ def extract_next_links(url, resp):
 
 
 
-# change this
 def is_valid(url):
-    # Decide whether to crawl this url or not. 
-    # If you decide to crawl it, return True; otherwise return False.
-    # There are already some conditions that return False.
-
-    # implement:
-    #   look for traps
-    #   look for similar pages
-    #       write something to detect similar URLs and/or similar webpage contents??
-    #           ex: webpages sharing url (disregard fragment part)
-    #   look for empty pages
-    #   look for big files that do nothing
-
-    
-
     try:
-        url = urldefrag(url)        # edited - takes url parameter and removes the fragment (#aaa, #bbb part)
-        parsed = urlparse(url[0])   # edited - url[0] is new url without fragment (so it's counted as one website)
+        # Takes url parameter and removes fragment part of URL, then parse through the defragmented URL to ensure 
+        # it is only counted as one website
+        url = urldefrag(url)
+        parsed = urlparse(url[0])
 
         if parsed.scheme not in set(["http", "https"]):
             return False
 
-        # NEW
         # Checks if URL is in valid domain (one of the four domains - ics, cs, informatics, stat)
         if not re.search('\.ics\.uci\.edu|\.cs\.uci\.edu|\.informatics\.uci\.edu|\.stat\.uci\.edu', parsed.netloc):
             return False
@@ -129,7 +96,6 @@ def is_valid(url):
             dup_url.setOfURLs.add(url)
         else:
             return False
-        # ===
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
@@ -147,14 +113,14 @@ def is_valid(url):
         raise
 
 
-# Added helper function
+# Added helper function - Adds new URL to the uniquePages.txt document if it is valid
 def addToUniquePages(url):
-    # Adds new URL to the uniquePages.txt document if it is valid
-    #if is_valid(url):
     uniquePage = open('uniquePages.txt', 'a')
     uniquePage.write(f"{url}\n")
     uniquePage.close()
 
+# In the event the server crashes during a crawl, this function restores the setOfURLs variable and re-adds all
+# existing URLs that were already crawled and added to the uniquePages.txt file
 def restoreDupURLs():
     pageFile = open("uniquePages.txt", "r")
     for line in pageFile:
