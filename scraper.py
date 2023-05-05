@@ -12,7 +12,7 @@ class dup_url:
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    addToUniquePages(url)       # added
+    addToUniquePages(url)
     valid_urls = [link for link in links if is_valid(link)]
     return valid_urls
 
@@ -37,7 +37,8 @@ def extract_next_links(url, resp):
         if SimHashObj.simHash.similar(frequencies) == True:
             return next_links
 
-        #update the current frequency totals amongst all pages. Track the longest page.
+        #update the current frequency totals amongst all pages. Track pages with a
+        #large amount of tokens.
         if(len(tokens) > 10000 or len(tokens) > text_tracker.longest_page[1]):
             text_tracker.longest_page = (url, len(tokens))
             lp_file = open("longest_page.txt", "a")
@@ -51,7 +52,7 @@ def extract_next_links(url, resp):
             else:
                 text_tracker.all_words[t] += frequencies[t]
 
-        #save current frequencies
+        #save current frequencies to a log file
         freq_text = open('frequency.txt', 'w')
         freq_text.write(f"{text_tracker.all_words}\n")
         freq_text.close()
@@ -68,8 +69,7 @@ def extract_next_links(url, resp):
         else:
             print(resp.error)
 
-    #turn relative urls into absolute
-    # [Ethan] defragment the urls here instead of in is_valid
+    #turn any relative urls into absolute
     for i in range(len(next_links)):
         potential_url = urljoin(url, next_links[i])
         potential_url = urldefrag(potential_url)

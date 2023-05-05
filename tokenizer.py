@@ -7,12 +7,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 stop_words = set(stopwords.words("english"))
 
-# Time Complexity: linear time
-    # The function will iterate through each character: O(n)
-        # Building the token character by character will take O(1)
-        # In each iteration, when a token is fully built, adding the token 
-        # to the list will on average run in constant time: O(1)
-    # O(n*(1+1)) = O(n)
+# tokenize a string of text into tokens of alphanumeric characters
 def tokenize(text):
     tokens = []
 
@@ -21,7 +16,6 @@ def tokenize(text):
     word = ""
     for char in text:    
         char = char.lower()
-        # O(1) since char will always be 1 character long
         if(alphanum.search(char)): 
             # builds tokens as it iterates through each character
             word += char
@@ -35,6 +29,7 @@ def tokenize(text):
 
     return tokens
 
+#filters out stopwords from a list of tokens.
 def remove_stopwords(tokens):
     filtered_list = []
 
@@ -45,11 +40,7 @@ def remove_stopwords(tokens):
 
     return filtered_list
 
-# Time Complexity: linear time
-    # The function will iterate through each token: O(n)
-        # Each iteration will update the dictionary value: O(1)
-        # dictionary access takes constant time due to hashing
-    # O(n*1) = O(n)
+# Creates a dictionary of frequencies of all the tokens.
 def computeWordFrequencies(tokens):
     # Use a dictionary to map tokens to frequency count
     freq = {}

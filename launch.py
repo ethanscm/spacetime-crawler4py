@@ -17,11 +17,12 @@ def main(config_file, restart):
     crawler = Crawler(config, restart)
 
     #restore data back to the classes
-    #comment it out if you are restarting
+    #comment this out if you are restarting the crawler
     load_old_data()
 
     crawler.start()
     
+    #print top 200 tokens and add it to a log file
     top_tokens = text_tracker.get_top_tokens(text_tracker.tokens, 200)
     top_txt = open("top.txt", 'a')
     print("Top Tokens")
@@ -30,6 +31,7 @@ def main(config_file, restart):
         top_txt.write(f'{t+1}) {top_tokens[t]} -> {text_tracker.all_words[top_tokens[t]]}\n')
     top_txt.close()
 
+#in the event of a crash, this will load all the existing data back into the variables using the log files.
 def load_old_data():
     text_tracker.restore_data()
     restoreDupURLs()

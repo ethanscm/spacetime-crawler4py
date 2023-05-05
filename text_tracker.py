@@ -3,6 +3,7 @@ class text_tracker:
     tokens = []
     longest_page = ("", 0)
 
+    # sort tokens by frequency using merge sort
     def SortFrequencies(array):
         if(len(array) == 1):
             return array
@@ -41,7 +42,8 @@ class text_tracker:
             r += 1
         
         return t
-
+    
+    #returns a list of tokens sorted by frequencies in descending order.
     def get_top_tokens(array, topnum):
 
         arr = text_tracker.SortFrequencies(array)
@@ -55,8 +57,8 @@ class text_tracker:
         
         return top
 
+    #restores the frequency dictionary and tokens
     def restore_data():
-        #restore the frequency variable
         freq_file = open("frequency.txt", 'r')
         freq_text= freq_file.read()
         raw_text = freq_text[1:-2]
@@ -71,8 +73,7 @@ class text_tracker:
 
         freq_file.close()
 
-        #restore the longest page variable
-        #store all keys back into tokens
+    #restore the longest page variable
     def restore_longest_page():
         lp_file = open("longest_page.txt", "r")
         lp = lp_file.read()
